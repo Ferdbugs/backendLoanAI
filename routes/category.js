@@ -14,18 +14,18 @@ router.get("/", (req, res) => {
 //Ideally would be used if we also perform delete/put etc on the same route
 
 router.route("/:category").get(getOnCategory, (req, res) => {
-  res.status(200).json(req.api);
+  res.status(200).json(req.apiData);
 });
 
 //Middleware for getting category
 
 async function getOnCategory(req, res, next) {
-  req.api = [];
+  req.apiData = [];
   await axios
     .get("https://api.publicapis.org/entries")
     .then((response) => {
       let count = 0;
-      req.api = response.data.entries.filter((entry) => {
+      req.apiData = response.data.entries.filter((entry) => {
         if (entry.Category == req.params.category) {
           if (req.query.limit ? count < parseInt(req.query.limit) : true) {
             count++;
@@ -37,7 +37,7 @@ async function getOnCategory(req, res, next) {
     .catch((err) => {
       console.log(err);
     });
-  if (req.api.length) {
+  if (req.apiData.length) {
     next();
   } else {
     //Usage of status code 204 would be sufficient here, but res.json was used for more clarity.
