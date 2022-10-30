@@ -14,7 +14,11 @@ router.get("/", (req, res) => {
 //Ideally would be used if we also perform delete/put etc on the same route
 
 router.route("/:category").get(getOnCategory, (req, res) => {
-  res.status(200).json(req.apiData);
+  if (req.query.render) {
+    res.render("index", { data: req.apiData });
+  } else {
+    res.status(200).json(req.apiData);
+  }
 });
 
 //Middleware for getting category

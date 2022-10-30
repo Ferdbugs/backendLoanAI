@@ -6,7 +6,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
-<body>
-    HEY! <%= 2+2 %>
+<body><ul>
+    <% for(var i=0; i<data.length; i++) { %>
+        <div>
+            <br>
+            Entry: <%= i+1 %> 
+            <br>
+        </div>
+        <li>
+            API: <%= data[i].API %>
+            <br>
+            Description: <%= data[i].Description %>
+            <br>
+            Auth: <%= data[i].Auth %>
+            <br>
+            HTTPS: <%= data[i].HTTPS %>
+            <br>
+            Link: <%= data[i].Link %>
+            <br>
+            Category: <%= data[i].Category %>
+        </li>
+    <% } %>
+</ul>
 </body>
 </html>

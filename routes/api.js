@@ -4,7 +4,11 @@ const axios = require("axios");
 const router = express.Router();
 
 router.get("/", getApiDesc, (req, res) => {
-  res.status(200).json(req.apiData);
+  if (req.query.render) {
+    res.render("index", { data: req.apiData });
+  } else {
+    res.status(200).json(req.apiData);
+  }
 });
 
 async function getApiDesc(req, res, next) {
