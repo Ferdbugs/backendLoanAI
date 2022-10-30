@@ -3,10 +3,11 @@ const axios = require("axios");
 
 const router = express.Router();
 
-var entryData = [];
-
 router.get("/", (req, res) => {
-  res.send("All Categories");
+  res.json({
+    message:
+      "Please pass a category to filter with. You can also add a limit as a query parameter.",
+  });
 });
 
 //Using router.route here as it allows for chaining different request types for same route
@@ -19,25 +20,30 @@ router.route("/:category").get(getOnCategory, (req, res) => {
 //Middleware for getting category
 
 async function getOnCategory(req, res, next) {
-  await axios.get("https://api.publicapis.org/entries").then((response) => {
-    let count = 0;
-    req.api = response.data.entries.filter((entry) => {
-      if (
-        entry.Category == req.params.category &&
-        count < parseInt(req.query.limit)
-      ) {
-        count++;
-        return entry;
-      }
+  req.api = [];
+  await axios
+    .get("https://api.publicapis.org/entries")
+    .then((response) => {
+      let count = 0;
+      req.api = response.data.entries.filter((entry) => {
+        if (entry.Category == req.params.category) {
+          if (req.query.limit ? count < parseInt(req.query.limit) : true) {
+            count++;
+            return entry;
+          }
+        }
+      });
+    })
+    .catch((err) => {
+      console.log(err);
     });
-  });
   if (req.api.length) {
     next();
   } else {
     //Usage of status code 204 would be sufficient here, but res.json was used for more clarity.
     res.json({
       message:
-        "No data found for this category, you can try a different category.",
+        "No results found for this category, you can try a different category.",
     });
   }
 }
